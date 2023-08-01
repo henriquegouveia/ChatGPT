@@ -34,7 +34,7 @@ public class TokenManager {
     }
 
     public Map<String, String> getGPT35TurboHeaders() {
-        headers.put("Authorization","Bearer " + settings.apiKey);
+        headers.put("api-key", settings.apiKey);
         headers.put("Content-Type","application/json");
         return headers;
     }
