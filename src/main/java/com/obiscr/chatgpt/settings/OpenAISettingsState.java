@@ -56,12 +56,6 @@ public class OpenAISettingsState implements PersistentStateComponent<OpenAISetti
   public String expireTime = "";
   public String imageUrl = "https://cdn.auth0.com/avatars/me.png";
   public String apiKey = "";
-  public Map<Integer,String> contentOrder = new HashMap<>(){{
-    put(1, CHATGPT_CONTENT_NAME);
-    put(2, GPT35_TRUBO_CONTENT_NAME);
-    put(3, ONLINE_CHATGPT_CONTENT_NAME);
-  }};
-
   public Boolean enableLineWarp = true;
 
   @Deprecated
@@ -81,15 +75,23 @@ public class OpenAISettingsState implements PersistentStateComponent<OpenAISetti
 
   public Boolean enableCustomizeGpt35TurboUrl = false;
   public Boolean enableCustomizeChatGPTUrl = false;
-
+  public Boolean enabledCustomDatasources = false;
+  public String indexNames = "";
   public String gpt35RoleText = "You are a helpful language assistant";
-
-  public String prompt1Name = "Find Bug";
-  public String prompt1Value = "Find the bug in the code below:";
-  public String prompt2Name = "Optimize Code";
-  public String prompt2Value = "Optimize this code:";
-  public String prompt3Name = "My Default";
-  public String prompt3Value = "My Default prompt:";
+  public String prompt1Name = "Code Review";
+  public String prompt1Value = "Review the code with the rules:\n" +
+          "Apply the principles of DRY, KISS, YAGNI and Clean Code during the review process.\n" +
+          "For each fix, create a section in markdown entry with the following information: previous_code (code before the fix), fixed_code (code after the fix), and comments (explanation of the fix).\n" +
+          "Make sure to add what was the source of the issue (source_of_correction) like: KISS, DRY, YAGNI or Clean code.";
+  public String prompt2Name = "Create Unit Tests";
+  public String prompt2Value = "Create test cases for the function following these rules:\n" +
+          "The tests must be written using the same language as the provided code. \n" +
+          "Put the tests cases in the same markdown section. \n" +
+          "Name the object of the class_name as sut.\n" +
+          "If it wouldn't be possible to infer a type, class or interface ask the developer to provide more details of it. \n" +
+          "Make sure to cover the throw scenarios as well.";
+  public String prompt3Name = "Find a Bug";
+  public String prompt3Value = "Find the bug in the code below:";
 
   @Tag("customPrompts")
   public Map<String, String> customPrompts = new HashMap<>();

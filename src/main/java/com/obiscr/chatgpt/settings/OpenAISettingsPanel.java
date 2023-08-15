@@ -76,10 +76,6 @@ public class OpenAISettingsPanel implements Configurable, Disposable {
     private ExpandableTextField prompt1ValueField;
     private ExpandableTextField prompt3ValueField;
     private ExpandableTextField prompt2ValueField;
-    private final String[] comboboxItemsString = {
-            CHATGPT_CONTENT_NAME,
-            GPT35_TRUBO_CONTENT_NAME,
-            ONLINE_CHATGPT_CONTENT_NAME};
     private boolean needRestart = false;
 
     public static final String FIND_GRANTS = "https://api.openai.com/dashboard/billing/credit_grants";
@@ -116,10 +112,6 @@ public class OpenAISettingsPanel implements Configurable, Disposable {
         readTimeoutField.getEmptyText().setText(ChatGPTBundle.message("ui.setting.connection.read_timeout.empty_text"));
         connectionTimeoutField.getEmptyText().setText(ChatGPTBundle.message("ui.setting.connection.connection_timeout.empty_text"));
         assistantApiKey.getEmptyText().setText("If it is empty, the API Key in GPT-3.5-Turbo will be used");
-
-        firstCombobox.setModel(new DefaultComboBoxModel<>(comboboxItemsString));
-        secondCombobox.setModel(new DefaultComboBoxModel<>(comboboxItemsString));
-        thirdCombobox.setModel(new DefaultComboBoxModel<>(comboboxItemsString));
 
         refreshButton.addActionListener(e -> {
             OpenAIUtil.refreshGranted(myMainPanel);
@@ -177,10 +169,6 @@ public class OpenAISettingsPanel implements Configurable, Disposable {
         proxyUsernameField.setText(state.proxyUsername);
         proxyPasswordField.setText(state.proxyPassword);
 
-        firstCombobox.setSelectedItem(state.contentOrder.get(1));
-        secondCombobox.setSelectedItem(state.contentOrder.get(2));
-        thirdCombobox.setSelectedItem(state.contentOrder.get(3));
-
         enableLineWarpCheckBox.setSelected(state.enableLineWarp);
         assistantApiKey.setText(state.assistantApiKey);
 
@@ -204,10 +192,7 @@ public class OpenAISettingsPanel implements Configurable, Disposable {
         OpenAISettingsState state = OpenAISettingsState.getInstance();
 
         // If you change the order, you need to restart the IDE to take effect
-        needRestart = !StringUtil.equals(state.contentOrder.get(1), (String)firstCombobox.getSelectedItem())||
-                !StringUtil.equals(state.contentOrder.get(2), (String)secondCombobox.getSelectedItem())||
-                !StringUtil.equals(state.contentOrder.get(3), (String)thirdCombobox.getSelectedItem()) ||
-                !state.enableLineWarp == enableLineWarpCheckBox.isSelected() ||
+        needRestart = !state.enableLineWarp == enableLineWarpCheckBox.isSelected() ||
                 !StringUtil.equals(state.prompt1Name, prompt1NameField.getText()) ||
                 !StringUtil.equals(state.prompt2Name, prompt2NameField.getText()) ||
                 !StringUtil.equals(state.prompt3Name, prompt3NameField.getText())
@@ -224,9 +209,6 @@ public class OpenAISettingsPanel implements Configurable, Disposable {
                 !state.enableProxyAuth == enableProxyAuthCheckBox.isSelected() ||
                 !StringUtil.equals(state.proxyUsername, proxyUsernameField.getText()) ||
                 !StringUtil.equals(state.proxyPassword, proxyPasswordField.getText()) ||
-                !StringUtil.equals(state.contentOrder.get(1), (String)firstCombobox.getSelectedItem()) ||
-                !StringUtil.equals(state.contentOrder.get(2), (String)secondCombobox.getSelectedItem()) ||
-                !StringUtil.equals(state.contentOrder.get(3), (String)thirdCombobox.getSelectedItem()) ||
                 !state.enableLineWarp == enableLineWarpCheckBox.isSelected() ||
                 !StringUtil.equals(state.assistantApiKey,assistantApiKey.getText()) ||
                 !StringUtil.equals(state.prompt1Name, prompt1NameField.getText()) ||
@@ -285,10 +267,6 @@ public class OpenAISettingsPanel implements Configurable, Disposable {
                     .noText("Close").ask(myMainPanel);
             return;
         }
-
-        state.contentOrder.put(1, firstSelected);
-        state.contentOrder.put(2, secondSelected);
-        state.contentOrder.put(3, thirdSelected);
 
         state.enableLineWarp = enableLineWarpCheckBox.isSelected();
         state.assistantApiKey = assistantApiKey.getText();

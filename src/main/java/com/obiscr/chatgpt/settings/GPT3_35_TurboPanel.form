@@ -252,6 +252,7 @@
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
+              <enabled value="false"/>
               <text value="Custom Datasources"/>
             </properties>
           </component>
@@ -267,7 +268,9 @@
         <constraints>
           <grid row="12" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <enabled value="true"/>
+        </properties>
         <border type="none"/>
         <children>
           <component id="ba91b" class="javax.swing.JTextField" binding="dataSourceIndexName">
@@ -277,6 +280,8 @@
               </grid>
             </constraints>
             <properties>
+              <editable value="false"/>
+              <enabled value="false"/>
               <toolTipText value="IndexName"/>
             </properties>
           </component>
