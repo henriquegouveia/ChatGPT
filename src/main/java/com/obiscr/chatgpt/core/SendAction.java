@@ -8,12 +8,14 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.obiscr.chatgpt.ChatGPTHandler;
 import com.obiscr.chatgpt.GPT35TurboHandler;
+import com.obiscr.chatgpt.analytics.AnalyticsManager;
 import com.obiscr.chatgpt.message.ChatGPTBundle;
 import com.obiscr.chatgpt.settings.OpenAISettingsState;
 import com.obiscr.chatgpt.settings.SettingConfiguration;
 import com.obiscr.chatgpt.ui.MainPanel;
 import com.obiscr.chatgpt.ui.MessageComponent;
 import com.obiscr.chatgpt.ui.MessageGroupComponent;
+import com.obiscr.chatgpt.util.EmailValidator;
 import com.obiscr.chatgpt.util.StringUtil;
 import okhttp3.Call;
 import okhttp3.sse.EventSource;
@@ -44,41 +46,37 @@ public class SendAction extends AnAction {
 
     private boolean presetCheck(boolean isChatGPTModel) {
         OpenAISettingsState instance = OpenAISettingsState.getInstance();
+        String errorMessage = "";
         if (isChatGPTModel) {
             if (StringUtil.isEmpty(instance.accessToken)) {
-                Notifications.Bus.notify(
-                        new Notification(ChatGPTBundle.message("group.id"),
-                                "Wrong setting",
-                                "Please configure the access token first.",
-                                NotificationType.ERROR));
-                return false;
+                errorMessage = "Please configure the access token first.";
             }
             if (instance.enableCustomizeChatGPTUrl && StringUtil.isEmpty(instance.customizeUrl)) {
-                Notifications.Bus.notify(
-                        new Notification(ChatGPTBundle.message("group.id"),
-                                "Wrong setting",
-                                "Please configure ChatGPT customize server first.",
-                                NotificationType.ERROR));
-                return false;
+                errorMessage = "Please configure ChatGPT customize server first.";
             }
         } else {
             if (StringUtil.isEmpty(instance.apiKey)) {
-                Notifications.Bus.notify(
-                        new Notification(ChatGPTBundle.message("group.id"),
-                                "Wrong setting",
-                                "Please configure a API Key first.",
-                                NotificationType.ERROR));
-                return false;
+                errorMessage = "Please configure a API Key first.";
+            }
+            if (StringUtil.isEmpty(instance.getAbiEmail()) || !EmailValidator.isValidEmail(instance.getAbiEmail())) {
+                errorMessage = "Please configure a valid email from ABI first.";
+
             }
             if (instance.enableCustomizeGpt35TurboUrl && StringUtil.isEmpty(instance.gpt35TurboUrl)) {
-                Notifications.Bus.notify(
-                        new Notification(ChatGPTBundle.message("group.id"),
-                                "Wrong setting",
-                                "Please configure GPT-3.5-Turbo customize server first.",
-                                NotificationType.ERROR));
-                return false;
+                errorMessage = "Please configure GPT-3.5-Turbo customize server first.";
             }
         }
+
+        if (!errorMessage.isEmpty()) {
+            Notifications.Bus.notify(
+                    new Notification(ChatGPTBundle.message("group.id"),
+                            "Wrong setting",
+                            errorMessage,
+                            NotificationType.ERROR));
+            AnalyticsManager.getInstance().trackError(errorMessage);
+            return false;
+        }
+
         return true;
     }
 
@@ -104,6 +102,8 @@ public class SendAction extends AnAction {
         MessageComponent answer = new MessageComponent("Waiting for response...",false);
         contentPanel.add(question);
         contentPanel.add(answer);
+
+        AnalyticsManager.getInstance().trackMessage(data);
 
         try {
             ExecutorService executorService = mainPanel.getExecutorService();

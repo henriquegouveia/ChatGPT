@@ -6,6 +6,7 @@ import com.intellij.openapi.util.Key;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.*;
+import com.obiscr.chatgpt.analytics.AnalyticsManager;
 import com.obiscr.chatgpt.message.ChatGPTBundle;
 import com.obiscr.chatgpt.settings.OpenAISettingsState;
 import com.obiscr.chatgpt.ui.action.*;
@@ -31,6 +32,8 @@ public class MyToolWindowFactory implements ToolWindowFactory {
      * @param toolWindow current tool window
      */
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
+        AnalyticsManager.getInstance().setup();
+
         ContentFactory contentFactory = ContentFactory.getInstance();
 
         ChatGPTToolWindow chatGPTToolWindow = new ChatGPTToolWindow(project);

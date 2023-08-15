@@ -29,6 +29,7 @@
                              displayName="Custom Prompt"/>
     <applicationService serviceImplementation="com.obiscr.chatgpt.settings.OpenAISettingsState"/>
     <applicationService serviceImplementation="com.obiscr.chatgpt.core.TokenManager"/>
+    <applicationService serviceImplementation="com.obiscr.chatgpt.analytics.AnalyticsManager"/>
     <projectService serviceImplementation="com.obiscr.chatgpt.core.ConversationManager"/>
     <projectService serviceImplementation="com.obiscr.chatgpt.core.SendAction"/>
     <projectService serviceImplementation="com.obiscr.chatgpt.ChatGPTHandler"/>

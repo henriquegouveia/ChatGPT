@@ -8,6 +8,8 @@ import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import com.intellij.util.xmlb.annotations.Tag;
 import com.obiscr.OpenAIProxy;
+import com.obiscr.chatgpt.analytics.AnalyticsManager;
+import com.obiscr.chatgpt.util.EmailValidator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,9 +29,19 @@ import static com.obiscr.chatgpt.MyToolWindowFactory.*;
         storages = @Storage("ChatGPTSettingsPlugin.xml")
 )
 public class OpenAISettingsState implements PersistentStateComponent<OpenAISettingsState> {
+  public String getAbiEmail() {
+    return abiEmail;
+  }
 
+  public void setAbiEmail(String abiEmail) {
+    this.abiEmail = abiEmail;
+    if (EmailValidator.isValidEmail(abiEmail)) {
+      AnalyticsManager.getInstance().identify(abiEmail);
+    }
+  }
+
+  private String abiEmail = "";
   public String customizeUrl = "";
-
   public String readTimeout = "50000";
   public String connectionTimeout = "50000";
   public Boolean enableProxy = false;

@@ -12,8 +12,6 @@ import com.obiscr.chatgpt.message.ChatGPTBundle;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -37,7 +35,11 @@ public class GPT3_35_TurboPanel implements Configurable, Disposable {
     private JTextField customizeServerField;
     private BrowserLink customizeServerHelpLabel;
     private JPanel customizeServerOptions;
-
+    private JCheckBox customDatasourcesCheckBox;
+    private JTextField dataSourceIndexName;
+    private JPanel datasourceValuePanel;
+    private JPanel datasourceTogglePanel;
+    private JBTextField abiEmailTextField;
 
     public GPT3_35_TurboPanel() {
         init();
@@ -45,6 +47,7 @@ public class GPT3_35_TurboPanel implements Configurable, Disposable {
 
     private void init() {
         apiKeyField.getEmptyText().setText("Your API Key, find it in: https://platform.openai.com/account/api-keys");
+        abiEmailTextField.getEmptyText().setText("Your ABI email.");
         ItemListener proxyTypeChangedListener = e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 enableCustomizeServerOptions(true);
@@ -65,6 +68,7 @@ public class GPT3_35_TurboPanel implements Configurable, Disposable {
     public void reset() {
         OpenAISettingsState state = OpenAISettingsState.getInstance();
         apiKeyField.setText(state.apiKey);
+        abiEmailTextField.setText(state.getAbiEmail());
         comboCombobox.setSelectedItem(state.gpt35Model);
         enableContextCheckBox.setSelected(state.enableContext);
         enableTokenConsumptionCheckBox.setSelected(state.enableTokenConsumption);
@@ -83,6 +87,7 @@ public class GPT3_35_TurboPanel implements Configurable, Disposable {
         OpenAISettingsState state = OpenAISettingsState.getInstance();
 
         return !state.apiKey.equals(apiKeyField.getText()) ||
+                !state.getAbiEmail().equals(abiEmailTextField.getText()) ||
                !state.gpt35Model.equals(comboCombobox.getSelectedItem().toString()) ||
                !state.enableContext == enableContextCheckBox.isSelected() ||
                !state.enableTokenConsumption == enableTokenConsumptionCheckBox.isSelected() ||
@@ -95,6 +100,7 @@ public class GPT3_35_TurboPanel implements Configurable, Disposable {
     public void apply() {
         OpenAISettingsState state = OpenAISettingsState.getInstance();
         state.apiKey = apiKeyField.getText();
+        state.setAbiEmail(abiEmailTextField.getText());
         state.gpt35Model = comboCombobox.getSelectedItem().toString();
         state.enableContext = enableContextCheckBox.isSelected();
         state.enableTokenConsumption = enableTokenConsumptionCheckBox.isSelected();

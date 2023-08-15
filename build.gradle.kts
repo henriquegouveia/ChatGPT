@@ -37,6 +37,8 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("com.squareup.okhttp3:okhttp-sse:4.10.0")
     implementation("com.vladsch.flexmark:flexmark:0.62.2")
+    implementation("com.obiscr:openai-auth:1.0.1")
+    implementation("com.segment.analytics.java:analytics:+")
 }
 
 // Configure Gradle IntelliJ Plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin
