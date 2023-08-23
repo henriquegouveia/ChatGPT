@@ -11,7 +11,6 @@ import com.obiscr.chatgpt.GPT35TurboHandler;
 import com.obiscr.chatgpt.analytics.AnalyticsManager;
 import com.obiscr.chatgpt.message.ChatGPTBundle;
 import com.obiscr.chatgpt.settings.OpenAISettingsState;
-import com.obiscr.chatgpt.settings.SettingConfiguration;
 import com.obiscr.chatgpt.ui.MainPanel;
 import com.obiscr.chatgpt.ui.MessageComponent;
 import com.obiscr.chatgpt.ui.MessageGroupComponent;
@@ -73,7 +72,7 @@ public class SendAction extends AnAction {
                             "Wrong setting",
                             errorMessage,
                             NotificationType.ERROR));
-            AnalyticsManager.getInstance().trackError(errorMessage);
+            AnalyticsManager.getInstance().trackConfigurationError(errorMessage);
             return false;
         }
 

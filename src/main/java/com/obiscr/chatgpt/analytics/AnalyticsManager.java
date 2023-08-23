@@ -1,13 +1,10 @@
 package com.obiscr.chatgpt.analytics;
 
-import com.google.common.collect.ImmutableMap;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.project.Project;
 import com.obiscr.chatgpt.settings.OpenAISettingsState;
 import com.segment.analytics.Analytics;
 import com.segment.analytics.messages.IdentifyMessage;
 import com.segment.analytics.messages.TrackMessage;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,11 +29,21 @@ public class AnalyticsManager {
         );
     }
 
-    public void trackError(final String error) {
+    public void trackConfigurationError(final String error) {
         Map<String, String> properties = new HashMap();
         properties.put("error", error);
 
-        analytics.enqueue(TrackMessage.builder("Error caught")
+        analytics.enqueue(TrackMessage.builder("Configuration error")
+                .userId(userId())
+                .properties(properties)
+        );
+    }
+
+    public void trackResponseError(final String error) {
+        Map<String, String> properties = new HashMap();
+        properties.put("error", error);
+
+        analytics.enqueue(TrackMessage.builder("Response error")
                 .userId(userId())
                 .properties(properties)
         );

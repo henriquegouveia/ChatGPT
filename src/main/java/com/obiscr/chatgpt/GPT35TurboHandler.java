@@ -1,5 +1,6 @@
 package com.obiscr.chatgpt;
 
+import com.obiscr.chatgpt.analytics.AnalyticsManager;
 import com.obiscr.chatgpt.core.builder.OfficialBuilder;
 import com.obiscr.chatgpt.core.parser.OfficialParser;
 import com.obiscr.chatgpt.settings.OpenAISettingsState;
@@ -73,6 +74,7 @@ public class GPT35TurboHandler extends AbstractHandler {
                             call.request().url(),
                             errorMessage);
                     errorMessage = "GPT 3.5 Turbo Request failure, cause: " + errorMessage;
+                    AnalyticsManager.getInstance().trackResponseError(errorMessage);
                     component.setSourceContent(errorMessage);
                     component.setContent(errorMessage);
                     mainPanel.aroundRequest(false);
@@ -88,6 +90,12 @@ public class GPT35TurboHandler extends AbstractHandler {
                         LOG.info("GPT 3.5 Turbo: Request failure. Url={}, response={}",provider.getUrl(), responseMessage);
                         component.setContent("Response failure, please try again. Error message: " + responseMessage);
                         mainPanel.aroundRequest(false);
+                        AnalyticsManager
+                                .getInstance()
+                                .trackResponseError(String
+                                        .format("GPT 3.5 Turbo: Request failure. Url=%s, response=%s",
+                                                provider.getUrl(),
+                                                responseMessage));
                         return;
                     }
                     OfficialParser.ParseResult parseResult = OfficialParser.
@@ -104,6 +112,7 @@ public class GPT35TurboHandler extends AbstractHandler {
             component.setSourceContent(e.getMessage());
             component.setContent(e.getMessage());
             mainPanel.aroundRequest(false);
+            AnalyticsManager.getInstance().trackResponseError(e.getMessage());
         } finally {
             mainPanel.getExecutorService().shutdown();
         }

@@ -2,6 +2,7 @@ package com.obiscr.chatgpt;
 
 import com.alibaba.fastjson2.JSON;
 import com.intellij.openapi.project.Project;
+import com.obiscr.chatgpt.analytics.AnalyticsManager;
 import com.obiscr.chatgpt.core.builder.OfficialBuilder;
 import com.obiscr.chatgpt.core.parser.OfficialParser;
 import com.obiscr.chatgpt.settings.OpenAISettingsState;
@@ -138,6 +139,7 @@ public class ChatGPTHandler extends AbstractHandler {
                         component.setContent("Response failure, cause: " + t.getMessage() + ", please try again. <br><br> Tips: if proxy is enabled, please check if the proxy server is working.");
                         mainPanel.aroundRequest(false);
                         t.printStackTrace();
+                        AnalyticsManager.getInstance().trackResponseError(t.getMessage());
                     } else {
                         String responseString = "";
                         if (response != null) {
@@ -147,11 +149,20 @@ public class ChatGPTHandler extends AbstractHandler {
                                 mainPanel.aroundRequest(false);
                                 LOG.error("ChatGPT: parse response error, cause: {}", e.getMessage());
                                 component.setContent("Response failure, cause: " + e.getMessage());
+                                AnalyticsManager
+                                        .getInstance()
+                                        .trackResponseError(String
+                                                .format("ChatGPT: parse response error, cause: %s",
+                                                e.getMessage()));
                                 throw new RuntimeException(e);
                             }
                         }
                         LOG.info("ChatGPT: conversation failure. Url={}, response={}",eventSource.request().url(), response);
                         component.setContent("Response failure, please try again. Error message: " + responseString);
+                        AnalyticsManager.getInstance().trackResponseError(String
+                                .format("GPT 3.5 Turbo: Request failure. Url=%s, response=%s",
+                                        eventSource.request().url(),
+                                        responseString));
                     }
                     mainPanel.aroundRequest(false);
                     component.scrollToBottom();
@@ -162,6 +173,7 @@ public class ChatGPTHandler extends AbstractHandler {
             return factory.newEventSource(request, listener);
         } catch (Exception e) {
             LOG.error("ChatGPT handle Exception, error: {}", e.getMessage());
+            AnalyticsManager.getInstance().trackResponseError(e.getMessage());
         } finally {
             mainPanel.getExecutorService().shutdown();
         }
